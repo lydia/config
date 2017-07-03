@@ -1,0 +1,55 @@
+#git:
+function git_dirty {
+	[[ $(git status 2> /dev/null | grep "modified:") != "" ]] && echo "*"
+}
+
+function git_deleted {
+	[[ $(git status 2> /dev/null | grep "deleted:") != "" ]] && echo "-"
+}
+
+function git_added {
+	[[ $(git status 2> /dev/null | grep "Untracked files:") != "" ]] && echo "+"
+}
+
+function git_branch {
+	[[ $(git status 2> /dev/null) ]] && git branch | grep "^\*" | sed "s_^\* __"
+}
+
+###########################################################################
+function git_parse_string {
+	[[ $(git branch 2> /dev/null) ]] && echo " [git:$(git_branch)$(git_added)$(git_dirty)$(git_deleted)]"
+}
+
+#hg: 
+function hg_dirty {
+	    [[ $(hg status 2> /dev/null | grep "^M") != "" ]] && echo "*" 
+}
+
+function hg_deleted {
+	    [[ $(hg status 2> /dev/null | grep "^!") != "" ]] && echo "-" 
+}
+
+function hg_added {
+	    [[ $(hg status 2> /dev/null | grep "^\?") != "" ]] && echo "+" 
+}
+############################################################################
+function hg_parse_string {
+	[[ $(hg branch 2> /dev/null) ]] && echo " [hg:`hg branch`$(hg_added)$(hg_dirty)$(hg_deleted)]"
+}
+
+RED="\e[31;1m"
+GREEN="\e[32;1m"
+BLUE="\e[34;1m"
+GREY="\e[40;0m"
+BLACK="\e[30;0m"
+PURPLE="\e[1;35m"
+function colorize {
+	echo "\[$1\]$2\[$GREY\]"
+}
+screen_start='\033k'
+screen_end='\033\\'
+function screen_title { 
+    [[ $STY != "" ]] && echo "\[$screen_start bash: \\u@\\h$screen_end\]"
+}
+prompt="$(colorize $GREY )$(colorize $PURPLE [\\A])$(colorize $RED \\u@\\h):$(colorize $BLUE \\w)\$(git_parse_string)\$(hg_parse_string)\$ "
+export PS1="$(screen_title)$prompt"

@@ -1,0 +1,10 @@
+defscrollback 5000
+#caption always "%{= kw}%-w%{= BW}%n %t%{-}%+w %-= ?:C-a ? N:C-a c @%H - %LD %d %LM - %c"
+#caption always "%{= kw}%-w%{= BW}%n %t%{-}%+w %-= ?:C-a ? N:C-a c @%H - %c"
+caption always "%{= kW}%-w%{= BW}%n %t%{-}%+w %-= %{= kw}?:C-a ? N:C-a c %{= kY}@%H%{= kw} -%{= kR} %c"
+vbell off
+altscreen on
+startup_message off
+
+escape ^Oo
+bind ^o focus
