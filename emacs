@@ -1,19 +1,5 @@
 (menu-bar-mode 0)
 
-;; sml horseshit
-(add-to-list 'load-path
-             "~/.emacs.d/elisp/sml-mode")
-(autoload 'sml-mode "sml-mode" "Major mode for editing SML." t)
-(autoload 'run-sml "sml-proc" "Run an inferior SML process." t)
-(setq sml-program-name "/usr/bin/sml")
-(defun my-sml-mode-hook () "Local defaults for SML mode"
-  (setq sml-indent-level 2)             ; conserve on horizontal space
-  (setq words-include-escape t)         ; \ loses word break status
-  (setq indent-tabs-mode nil))          ; never ever indent with tabs
-(add-hook 'sml-mode-hook 'my-sml-mode-hook)
-(add-to-list 'auto-mode-alist '("\\.\\(sml\\|sig\\)\\'" . sml-mode))
-
-
 ;; Arduino + emacs https://www.emacswiki.org/emacs-test/ArduinoSupport
 (setq auto-mode-alist (cons '("\\.\\(pde\\|ino\\)$" . arduino-mode) auto-mode-alist))
 (autoload 'arduino-mode "arduino-mode" "Arduino editing mode." t)
@@ -79,3 +65,13 @@
 
 ;; Enabling Semantic (code-parsing, smart completion) features
 (semantic-mode 1)
+
+(require 'package)
+(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+                    (not (gnutls-available-p))))
+              (url (concat (if no-ssl "http" "https") "://stable.melpa.org/packages/")))
+  (add-to-list 'package-archives (cons "melpa-stable" url) t))
+(when (< emacs-major-version 24)
+  ;; For important compatibility libraries like cl-lib
+  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+(package-initialize)
