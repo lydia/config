@@ -102,3 +102,5 @@ fi
 
 PS1='\[\e[31;1m\][\A]\[\e[32;1m\]\u@\h\[\e[0m\]:\[\e[34;1m\]\w\[\e[0m\]\$ '
 source ~/.bash_prompt
+
+export LINT_TIMEOUT=0

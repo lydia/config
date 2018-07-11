@@ -50,11 +50,11 @@
 (add-to-list 'load-path "~/.emacs.d/elisp")
 
 ;; Auto detect indent style for c
-(add-hook 'c-mode-common-hook
-  (lambda()
-    (require 'dtrt-indent)
-    (dtrt-indent-mode t))
-)
+;;(add-hook 'c-mode-common-hook
+;;  (lambda()
+;;    (require 'dtrt-indent)
+;;    (dtrt-indent-mode t))
+;;)
 
 ;; Enable EDE (Project Management) features
 (global-ede-mode 1)
@@ -75,3 +75,69 @@
   ;; For important compatibility libraries like cl-lib
   (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
 (package-initialize)
+
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages (quote (haskell-mode company))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+
+;; HERE BE ATG STUFF
+
+;-----------------------------;
+;        C++ Indentation, Thanks to Joe Lisee
+;-----------------------------;
+
+(c-add-style "uatc-c-style"
+  '((c-auto-newline                 . nil)
+    (c-basic-offset                 . 4)
+    (c-comment-only-line-offset     . 0)
+    (c-hanging-braces-alist         . ((substatement-open after)
+                                       (brace-list-open)))
+    (c-offsets-alist                . ((arglist-close . c-lineup-arglist)
+                                       (case-label . 4)
+                                       (substatement-open . 0)
+                                       (block-open . 0) ; no space before {
+                                       (inline-open . 0) ; no space before {
+                                       (knr-argdecl-intro . -)
+                                       (innamespace . 0)))
+    (c-hanging-colons-alist         . ((member-init-intro before)
+                                       (inher-intro)
+                                       (case-label after)
+                                       (label after)
+                                       (access-label after)))
+    (c-cleanup-list                 . (scope-operator
+                                       empty-defun-braces
+                                       defun-close-semi))))
+
+(setq-default indent-tabs-mode nil)
+(c-set-offset 'comment-intro 0)
+(setq c-default-style "uatc-c-style")
+
+(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/rtags")
+
+(require 'company)
+(require 'rtags)
+
+(setq rtags-autostart-diagnostics t)
+
+(setq rtags-completions-enabled t)
+(push 'company-rtags company-backends)
+(global-company-mode)
+
+(rtags-enable-standard-keybindings nil "\C-t")
+(define-key c-mode-base-map (kbd "M-=") (function rtags-symbol-type))
+(define-key c-mode-base-map (kbd "M-.") (function rtags-find-symbol-at-point))
+(define-key c-mode-base-map (kbd "M-,") (function rtags-find-references-current-file))
+(define-key c-mode-base-map (kbd "M-/") (function rtags-find-all-references-at-point))
+(define-key c-mode-base-map (kbd "M-i") (function rtags-imenu))
+(define-key c-mode-base-map (kbd "<C-tab>") (function company-complete))
