@@ -102,3 +102,18 @@ fi
 
 PS1='\[\e[31;1m\][\A]\[\e[32;1m\]\u@\h\[\e[0m\]:\[\e[34;1m\]\w\[\e[0m\]\$ '
 source ~/.bash_prompt
+
+export PYTHONPATH=/home/lydia/ycm_extra_conf.jsondb
+export LINT_TIMEOUT=0
+
+if [ ! -S ~/.ssh/ssh_auth_sock ]; then
+  eval `ssh-agent`
+  ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock
+fi
+export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
+ssh-add -l | grep "The agent has no identities" && ssh-add
+
+export GOPATH="$HOME/gocode"
+export GOROOT=/usr/local/go
+export PATH="$GOPATH/bin:$GOROOT/bin:$PATH"
+export USIM2_COMMS_ROOT="/tmp/usim2_comms/"

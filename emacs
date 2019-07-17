@@ -6,10 +6,15 @@
 
 (menu-bar-mode 0)
 
+;; Winner mode stores history for emacs windows so you can undo mistakes.
+(winner-mode t)
 
 ;; Turns on syntax highlighting for all files for which emacs knows how to
 ;; highlight.
 (global-font-lock-mode t)
+
+;; Auto-revert file buffers (great for git rebase based workflows)
+(global-auto-revert-mode t)
 
 ;; Makes the space between the "mark" and the "point" be highlighted -
 ;; essentially, emacs' notion of the "currently selected text". This is
@@ -49,13 +54,6 @@
 ;; Load some files
 (add-to-list 'load-path "~/.emacs.d/elisp")
 
-;; Auto detect indent style for c
-(add-hook 'c-mode-common-hook
-  (lambda()
-    (require 'dtrt-indent)
-    (dtrt-indent-mode t))
-)
-
 ;; Enable EDE (Project Management) features
 (global-ede-mode 1)
 
@@ -75,3 +73,76 @@
   ;; For important compatibility libraries like cl-lib
   (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
 (package-initialize)
+
+;-----------------------------;
+;        C++ Indentation, Thanks to Joe Lisee
+;-----------------------------;
+(c-add-style "uatc-c-style"
+  '((c-auto-newline                 . nil)
+    (c-basic-offset                 . 4)
+    (c-comment-only-line-offset     . 0)
+    (c-hanging-braces-alist         . ((substatement-open after)
+                                       (brace-list-open)))
+    (c-offsets-alist                . ((arglist-close . c-lineup-arglist)
+                                       (case-label . 4)
+                                       (substatement-open . 0)
+                                       (block-open . 0) ; no space before {
+                                       (inline-open . 0) ; no space before {
+                                       (knr-argdecl-intro . -)
+                                       (innamespace . 0)))
+    (c-hanging-colons-alist         . ((member-init-intro before)
+                                       (inher-intro)
+                                       (case-label after)
+                                       (label after)
+                                       (access-label after)))
+    (c-cleanup-list                 . (scope-operator
+                                       empty-defun-braces
+                                       defun-close-semi))))
+
+(setq-default indent-tabs-mode nil)
+(c-set-offset 'comment-intro 0)
+(setq c-default-style "uatc-c-style")
+
+
+; delete whitespace from end of lines
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-enabled-themes (quote (tsdh-dark)))
+ '(inhibit-startup-screen t)
+ '(package-selected-packages
+   (quote
+    (go-mode company-ycmd flycheck-ycmd ycmd rtags company color-identifiers-mode flycheck)
+    )
+   )
+ )
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+;; ycmd ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'cc-mode)
+;; (require 'ycmd)
+;; (require 'company)
+;; (require 'company-ycmd)
+;; (require 'flycheck-ycmd)
+;; ;; ycmd in all supported modes.
+;; (add-hook 'after-init-hook #'global-ycmd-mode)
+;; (set-variable 'ycmd-server-command `("python",  (file-truename  "~/ycmd/ycmd")))
+;; ;; auto-load .ycmd_extra_conf.py files for whitelisted projects
+;; (set-variable 'ycmd-extra-conf-whitelist '("~/av/*"))
+;; (company-ycmd-setup)
+;; (flycheck-ycmd-setup)
+;; (setq flycheck-indication-mode nil)
+;; (setq company-idle-delay 0.2)
+;; (eval-after-load 'cc-mode '(define-key c-mode-base-map (kbd "M-.") (function ycmd-goto)))
+;; ;; Company and flycheck can interfere in emacs -nw.
+;; (when (not (display-graphic-p))
+;;   (setq flycheck-indication-mode nil))
+;; (global-ycmd-mode)
